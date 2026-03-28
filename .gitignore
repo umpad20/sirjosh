@@ -1,4 +1,7 @@
+# Ignore Next.js build output
+.next/
 node_modules
 .next
 node_modules
 .env
+.next/
