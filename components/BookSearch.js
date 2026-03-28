@@ -9,15 +9,19 @@ export default function BookSearch({ filters, setFilters, onSearch }) {
       onSubmit={e => { e.preventDefault(); onSearch(); }}
     >
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'flex-end' }}>
-        <div style={{ flex: '1 1 200px' }}>
+        <div style={{ flex: '1 1 220px' }}>
           <label htmlFor="search-title" className="form-label">Title</label>
-          <input
-            id="search-title" name="title" type="text" className="input"
-            placeholder="Search by title..."
-            value={filters.title}
-            onChange={e => setFilters(f => ({ ...f, title: e.target.value }))}
-            aria-label="Search by title"
-          />
+          <div style={{ position: 'relative' }}>
+            <svg style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+            <input
+              id="search-title" name="title" type="text" className="input"
+              placeholder="Search by title..."
+              value={filters.title}
+              onChange={e => setFilters(f => ({ ...f, title: e.target.value }))}
+              aria-label="Search by title"
+              style={{ paddingLeft: '2.25rem' }}
+            />
+          </div>
         </div>
         <div style={{ flex: '1 1 200px' }}>
           <label htmlFor="search-author" className="form-label">Author</label>
@@ -29,7 +33,7 @@ export default function BookSearch({ filters, setFilters, onSearch }) {
             aria-label="Search by author"
           />
         </div>
-        <div style={{ flex: '1 1 120px' }}>
+        <div style={{ flex: '0 1 120px' }}>
           <label htmlFor="search-aisle" className="form-label">Aisle</label>
           <input
             id="search-aisle" name="aisle" type="text" className="input"

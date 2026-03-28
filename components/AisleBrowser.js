@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 
 export default function AisleBrowser({ books = [], onSelectAisle, selectedAisle }) {
-  // Dynamically calculate aisles, shelf counts, and book counts
   const { aisles, aisleStats } = useMemo(() => {
     const stats = {};
     books.forEach(book => {
@@ -24,7 +23,10 @@ export default function AisleBrowser({ books = [], onSelectAisle, selectedAisle 
           <h2 className="section-title">Library Map</h2>
         </div>
         <div className="card-static" style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
-          <p>No sections available yet. Add books to generate the library map.</p>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--text-light)', marginBottom: '0.75rem' }} aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          <p style={{ margin: '0 auto' }}>No sections available yet. Add books to generate the library map.</p>
         </div>
       </div>
     );
@@ -34,11 +36,14 @@ export default function AisleBrowser({ books = [], onSelectAisle, selectedAisle 
     <div>
       <div className="section-header">
         <h2 className="section-title">Library Map</h2>
+        <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+          {aisles.length} {aisles.length === 1 ? 'aisle' : 'aisles'}
+        </span>
       </div>
       <div className="aisle-grid" role="tablist" aria-label="Library aisles">
         {aisles.map(aisle => {
           const info = aisleStats[aisle];
-          const shelfCount = info.shelves.size > 0 ? info.shelves.size : 1; 
+          const shelfCount = info.shelves.size > 0 ? info.shelves.size : 1;
 
           return (
             <button
@@ -49,9 +54,18 @@ export default function AisleBrowser({ books = [], onSelectAisle, selectedAisle 
               aria-selected={selectedAisle === aisle}
               aria-label={`Aisle ${aisle}`}
             >
+              {/* Icon */}
+              <div className="aisle-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </svg>
+              </div>
               <div className="aisle-letter">{aisle.charAt(0)}</div>
               <div className="aisle-label">{aisle === 'Uncategorized' ? 'Uncategorized' : `Section ${aisle}`}</div>
-              <div className="aisle-count">{info.books} {info.books === 1 ? 'book' : 'books'} · {shelfCount} {shelfCount === 1 ? 'shelf' : 'shelves'}</div>
+              <div className="aisle-count">
+                {info.books} {info.books === 1 ? 'book' : 'books'} · {shelfCount} {shelfCount === 1 ? 'shelf' : 'shelves'}
+              </div>
 
               {/* Shelf grid preview */}
               {selectedAisle === aisle && (
