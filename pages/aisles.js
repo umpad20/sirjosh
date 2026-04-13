@@ -9,6 +9,7 @@ export default function Aisles() {
   const [loading, setLoading] = useState(true);
   const [books, setBooks] = useState([]);
   const [selectedAisle, setSelectedAisle] = useState('');
+  const [selectedShelf, setSelectedShelf] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -23,13 +24,16 @@ export default function Aisles() {
         const uniqueAisles = [...new Set(data.filter(b => b.aisle).map(b => b.aisle))].sort();
         if (uniqueAisles.length > 0) {
           setSelectedAisle(uniqueAisles[0]);
+          setSelectedShelf('');
         }
       }
     } catch (err) {}
     finally { setLoading(false); }
   }
 
-  const filteredBooks = books.filter(b => (b.aisle || 'Uncategorized') === selectedAisle);
+  const filteredBooks = selectedShelf 
+    ? books.filter(b => (b.aisle || 'Uncategorized') === selectedAisle && String(b.shelf) === String(selectedShelf))
+    : books.filter(b => (b.aisle || 'Uncategorized') === selectedAisle);
 
   return (
     <Layout>
@@ -43,13 +47,13 @@ export default function Aisles() {
           <LoadingState message="Loading library map..." />
         ) : (
           <>
-            <AisleBrowser books={books} onSelectAisle={setSelectedAisle} selectedAisle={selectedAisle} />
+            <AisleBrowser books={books} onSelectAisle={(aisle) => { setSelectedAisle(aisle); setSelectedShelf(''); }} selectedAisle={selectedAisle} onSelectShelf={setSelectedShelf} selectedShelf={selectedShelf} />
             
             {selectedAisle && (
               <div style={{ marginTop: '2rem' }}>
                 <div className="section-header">
                   <h2 className="section-title">
-                    Books in {selectedAisle === 'Uncategorized' ? 'Uncategorized' : `Aisle ${selectedAisle}`}
+                    {selectedShelf ? `Books in ${selectedAisle === 'Uncategorized' ? 'Uncategorized' : `Aisle ${selectedAisle}`}, Shelf ${selectedShelf}` : `Books in ${selectedAisle === 'Uncategorized' ? 'Uncategorized' : `Aisle ${selectedAisle}`}`}
                   </h2>
                   <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', fontWeight: 500 }}>
                     {filteredBooks.length} {filteredBooks.length === 1 ? 'book' : 'books'}

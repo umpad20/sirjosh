@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-export default function AisleBrowser({ books = [], onSelectAisle, selectedAisle }) {
+export default function AisleBrowser({ books = [], onSelectAisle, selectedAisle, onSelectShelf, selectedShelf }) {
   const { aisles, aisleStats } = useMemo(() => {
     const stats = {};
     books.forEach(book => {
@@ -66,24 +66,46 @@ export default function AisleBrowser({ books = [], onSelectAisle, selectedAisle 
               <div className="aisle-count">
                 {info.books} {info.books === 1 ? 'book' : 'books'} · {shelfCount} {shelfCount === 1 ? 'shelf' : 'shelves'}
               </div>
-
-              {/* Shelf grid preview */}
-              {selectedAisle === aisle && (
-                <div className="shelf-grid animate-fade-in" role="tabpanel">
-                  {Array.from({ length: shelfCount }, (_, i) => (
-                    <div key={i} className="shelf-item" title={`Shelf ${i + 1}`}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" style={{ marginBottom: 2 }}>
-                        <path d="M3 6h18M3 12h18M3 18h18" />
-                      </svg>
-                      <div>Shelf {i + 1}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </button>
           );
         })}
       </div>
+
+      {/* Shelf selection */}
+      {selectedAisle && aisleStats[selectedAisle]?.shelves.size > 0 && (
+        <div className="shelf-selection animate-fade-in" style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--border-light)' }}>
+          <div className="section-header">
+            <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
+              Shelves in {selectedAisle === 'Uncategorized' ? 'Uncategorized' : `Aisle ${selectedAisle}`}
+            </h3>
+          </div>
+          <div className="shelf-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '0.75rem', marginTop: '1rem' }}>
+            {Array.from(aisleStats[selectedAisle].shelves).map((shelf) => (
+              <button
+                key={shelf}
+                onClick={(e) => { e.preventDefault(); onSelectShelf(shelf); }}
+                style={{
+                  cursor: 'pointer',
+                  border: selectedShelf === shelf ? '2px solid var(--green-primary)' : '1px solid var(--border-light)',
+                  borderRadius: '0.5rem',
+                  padding: '1rem 0.75rem',
+                  textAlign: 'center',
+                  fontSize: '0.875rem',
+                  fontWeight: selectedShelf === shelf ? 600 : 500,
+                  backgroundColor: selectedShelf === shelf ? 'var(--green-primary)' : 'transparent',
+                  color: selectedShelf === shelf ? 'white' : 'var(--text-muted)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" style={{ marginBottom: '0.5rem', display: 'block', margin: '0 auto 0.5rem' }}>
+                  <path d="M3 6h18M3 12h18M3 18h18" />
+                </svg>
+                {shelf}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
